@@ -75,8 +75,14 @@
   </trigger>
 </triggers>
 
-<!--  Timers  -->
 <aliases>
+	<alias
+		script="chat_log_clear"
+		match="clear_chats"
+		enabled="y"
+		sequence="100"
+		>
+	</alias>
 	<alias
 		script="show_chat_log"
 		match="show_chats"
@@ -88,7 +94,6 @@
 </aliases>
 
 <!--  Script  -->
-
 
 <script>
 <![CDATA[
@@ -125,6 +130,14 @@ local top =  (i * font_height) - font_height
   WindowText (win, id, text, left, top, 0, 0, colour)
 
 end -- Display_Line
+
+function chat_log_clear ()
+  for i=1, num_log_lines do
+    chat_log[i] = " "
+  end
+
+  show_chat_log ()
+end
 
 function show_chat_log ()
 
