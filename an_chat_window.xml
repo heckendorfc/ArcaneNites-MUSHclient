@@ -4,7 +4,7 @@
 <muclient>
 <plugin
    name="Arcane_Nites_Chat_Logger"
-   author="Merbie"
+   author="Selic"
    id="cf3c0748753d37f3e9832fc3"
    language="Lua"
    purpose="Displays channel messages in a window"
@@ -25,52 +25,67 @@
 
 <triggers>
   <trigger
-   match=".*? tells you '.*"
+   match="* tells you '*"
    name="tell_line"
    script="tell_line"
    sequence="100"
+   enabled="y"
   >
   </trigger>
 
   <trigger
-   match=".*? says '.*"
+   match="* says '*"
    name="say_line"
    script="say_line"
    sequence="100"
+   enabled="y"
   >
   </trigger>
   <trigger
-   match=".*? shrieks '.*"
+   match="* shrieks '*"
    name="shriek_line"
    script="shriek_line"
    sequence="100"
+   enabled="y"
   >
   </trigger>
   <trigger
-   match=".*? OOCs '.*"
+   match="* OOCs '*"
    name="ooc_line"
    script="ooc_line"
    sequence="100"
+   enabled="y"
   >
   </trigger>
   <trigger
-   match=".*? tells the group '.*"
+   match="* tells the group '*"
    name="gtell_line"
    script="gtell_line"
    sequence="100"
+   enabled="y"
   >
   </trigger>
   <trigger
-   match="\1B[0;37m.*?> .*"
+   match="\1B[0;37m*> *"
    name="hero_line"
    script="hero_line"
    sequence="100"
+   enabled="y"
   >
   </trigger>
 </triggers>
 
 <!--  Timers  -->
+<aliases>
+	<alias
+		script="show_chat_log"
+		match="show_chats"
+		enabled="y"
+		sequence="100"
+		>
+	</alias>
 
+</aliases>
 
 <!--  Script  -->
 
@@ -88,16 +103,18 @@ time_colour = 0x82004B
 chat_log = {}
 chat_log_index = 1
 num_log_lines = 7
+max_width=1
  
 function add_chat_line (line)
   chat_log[chat_log_index] = line
 
   chat_log_index = chat_log_index + 1
-  if chat_log_index >= num_log_lines then
+  if chat_log_index > num_log_lines then
     chat_log_index = 1
   end
 
   max_width = math.max (max_width, WindowTextWidth (win, font_id, line))
+  show_chat_log()
 end -- add_chat_line
 
 function Display_Line (i, text, id, colour)
@@ -120,17 +137,17 @@ function show_chat_log ()
   check (WindowCreate (win, 
                  0, 0,   -- left, top (auto-positions)
                  max_width + 10,     -- width
-                 (#chat_log + 2)   * font_height + 5,  -- height
+                 (#chat_log)   * font_height + 5,  -- height
                  7,       -- auto-position: top middle
                  0,  -- flags
                  0xE7FFFF) )
  
   for i=1, #chat_log do
-    Display_Line (i, chat_log[1+(chat_log_index+i)%num_log_lines], font_id, text_colour)
+    Display_Line (i, chat_log[1+(chat_log_index+i-2)%(num_log_lines)], font_id, text_colour)
   end
 
   WindowShow (win, true)  
-end -- show_campaign_text
+end
 
 function tell_line (name, line, wildcards)
 	add_chat_line(line)
@@ -174,7 +191,7 @@ function OnPluginInstall ()
   font_height = WindowFontInfo (win, font_id, 1)  -- height
 
   for i=1, num_log_lines do
-    chat_log[i] = ""
+    chat_log[i] = " "
   end
 end -- OnPluginInstall
 

@@ -4,7 +4,7 @@
 <muclient>
 <plugin
    name="Arcane_Nites_Stats_Window"
-   author="Merbie"
+   author="Selic"
    id="bb5299ab4b2bcb8009707689"
    language="Lua"
    purpose="Displays stats in a window"
@@ -35,6 +35,10 @@ background_colour = 0xE7FFFF
 text_colour = 0x000000
 heading_colour = 0x800080
 time_colour = 0x82004B
+msdpv = {}
+msdpk = {}
+
+local MSDP = 69
 
 function OnPluginTelnetRequest (type, data)
 	if type == MSDP and data == "WILL" then
@@ -110,16 +114,33 @@ show_stats()
 end -- if
 end -- function OnPluginTelnetSubnegotiation
 
+function findInd(MSDP_var)
+	if #msdpv == 0 then
+		return 1
+	else
+		for i=1,#msdpv do
+			if msdpk[i] == MSDP_var then
+				return i
+			end
+		end
+	end
+
+	return #msdpv+1
+end
+
 function StoreVariable (MSDP_var, MSDP_val)
+	local ind = findInd(MSDP_var)
 	--Note('Variable: '..MSDP_var..' = '..MSDP_val)
 	if MSDP_var == "SERVER_ID" then
 		show_stats()
 		SendPkt ("\255\250\69\1PLUGIN_ID\2GW2 MUSHclient plugin (version 1.14)\255\240")
 	elseif MSDP_var == "HOTKEY" then
-		msdp[MSDP_var] = MSDP_val
+		msdpv[ind] = MSDP_val
+		msdpk[ind] = MSDP_var
 		-- update_hotkeys ()
 	else -- store the variable
-		msdp[MSDP_var] = MSDP_val
+		msdpv[ind] = MSDP_val
+		msdpk[ind] = MSDP_var
 		show_stats()
 	end -- if
 end -- function StoreVariable
@@ -134,29 +155,29 @@ function Display_Line (i, text, id, colour)
 end -- Display_Line
 
 function show_stats()
-  if #msdp == 0 then
+  if #msdpv == 0 then
     return
   end -- if
 
-  local keyset={}
-  local n=0
+  -- local keyset={}
+  -- local n=0
 
-  for k,v in pairs(msdp) do
-    n=n+1
-    keyset[n]=k
-  end
+  -- for k,v in pairs(msdpv) do
+    -- n=n+1
+    -- keyset[n]=k
+  -- end
 
   -- recreate the window the correct size
   check (WindowCreate (win, 
                  0, 0,   -- left, top (auto-positions)
                  max_width + 10,     -- width
-                 (#msdp + 2)   * font_height + 5,  -- height
+                 (#msdpv)   * font_height + 5,  -- height
                  7,       -- auto-position: top middle
                  0,  -- flags
                  0xE7FFFF) )
  
-  for i=1, #msdp do
-    line = string.format("%s: %s",keyset[i],msdp[keyset[i]])
+  for i=1,#msdpv do
+    line = string.format("%s: %s",msdpk[i],msdpv[i])
     Display_Line (i, line, font_id, text_colour)
   end
 
@@ -164,7 +185,7 @@ function show_stats()
 end
 
 function OnPluginInstall ()
-  max_width = 20
+  -- msdpv[1] = "abc"
   win = GetPluginID ()
   font_id = "fn"
   
@@ -179,6 +200,9 @@ function OnPluginInstall ()
 
   check (WindowFont (win, font_id, font_name, 8, false, false, false, false, 0, 0))  -- normal  
   font_height = WindowFontInfo (win, font_id, 1)  -- height
+  max_width = WindowTextWidth(win, font_id, "HITROLL: 12345678")
+  show_stats();
+
 end -- OnPluginInstall
 
 function OnPluginDisable ()
