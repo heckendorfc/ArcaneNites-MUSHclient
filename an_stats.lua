@@ -2,9 +2,9 @@ local stat_keys = {"AC","CHA","CON","DAMROLL","DEX","HITROLL","INT","SAVES","STR
 local text_colour = 0x000000
 
 function show_stats()
-	if #msdpv == 0 then
-		return
-	end -- if
+	-- if #msdpv == 0 then
+		-- return
+	-- end -- if
 
 	-- recreate the window the correct size
 	check (WindowCreate (stat_win, 

@@ -31,8 +31,10 @@ require "msdp"
 require "an_ui"
 require "an_stats"
 require "an_vitals"
+require "an_affects"
 
 function ui_update()
+	show_affects()
 	show_stats()
 	draw_energy_bars()
 end

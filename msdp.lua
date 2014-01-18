@@ -9,7 +9,7 @@ function OnPluginTelnetRequest (type, data)
 		return true
 	elseif type == MSDP and data == "SENT_DO" then
 		-- IAC SB MSDP response IAC SE 
-		SendPkt ("\255\250\69\1REPORT\2HEALTH\2HEALTH_MAX\2MANA\2MANA_MAX\2MOVEMENT\2MOVEMENT_MAX\2HITROLL\2DAMROLL\2SAVES\2AC\2STR\2INT\2WIS\2CON\2DEX\2CHA\255\240")
+		SendPkt ("\255\250\69\1REPORT\2AFFECTS\2HEALTH\2HEALTH_MAX\2MANA\2MANA_MAX\2MOVEMENT\2MOVEMENT_MAX\2HITROLL\2DAMROLL\2SAVES\2AC\2STR\2INT\2WIS\2CON\2DEX\2CHA\255\240")
 		return true
 	else -- another protocol
 		return false
@@ -18,60 +18,60 @@ end -- function OnPluginTelnetRequest
 
 function OnPluginTelnetSubnegotiation (type, data)
 if type == MSDP then
-endpos = string.len(data)
-bName = false
-bValue = false
-bTable = false
-bIgnore = false
-variable = nil
-value = nil
+	endpos = string.len(data)
+	bName = false
+	bValue = false
+	bTable = false
+	bIgnore = false
+	variable = nil
+	value = nil
 
---Note('Raw data: ['..data..']')
+	--Note('Raw data: ['..data..']')
 
-for i=1,endpos,1 do
-if string.byte(data,i) == 1 and bTable == false then
-if variable ~= nil and value ~= nil then
-StoreVariable(variable, value)
-variable = nil
-value = nil
-end -- if
-bName = true
-bValue = false
-elseif string.byte(data,i) == 2 and bTable == false then
-if value ~= nil then
-value = value.." "
-end -- if
-bName = false
-bValue = true
-elseif string.byte(data,i) == 3 then
-bTable = true
-bIgnore = true
-elseif string.byte(data,i) == 4 then
-bTable = false
-elseif bIgnore == true then
-bIgnore = false -- Just ignore one character.
-elseif bName == true then
-if variable == nil then
-variable = ""
-end -- if
-variable = variable..string.sub(data,i,i)
-elseif bValue == true then
-if value == nil then
-value = ""
-end -- if
-value = value..string.sub(data,i,i)
-end -- if
-end -- for
+	for i=1,endpos,1 do
+		if string.byte(data,i) == 1 and bTable == false then
+			if variable ~= nil and value ~= nil then
+				StoreVariable(variable, value)
+				variable = nil
+				value = nil
+			end -- if
+			bName = true
+			bValue = false
+		elseif string.byte(data,i) == 2 and bTable == false then
+			if value ~= nil then
+				value = value.." "
+			end -- if
+			bName = false
+			bValue = true
+		elseif string.byte(data,i) == 3 then
+			bTable = true
+			bIgnore = true
+		elseif string.byte(data,i) == 4 then
+			bTable = false
+		elseif bIgnore == true then
+			bIgnore = false -- Just ignore one character.
+		elseif bName == true then
+			if variable == nil then
+				variable = ""
+			end -- if
+			variable = variable..string.sub(data,i,i)
+		elseif bValue == true then
+			if value == nil then
+				value = ""
+			end -- if
+			value = value..string.sub(data,i,i)
+		end -- if
+	end -- for
 
-if variable ~= nil then
-if value == nil then
-value = ""
-end -- if
-StoreVariable(variable, value)
-end -- if
+	if variable ~= nil then
+		if value == nil then
+			value = ""
+		end -- if
+		StoreVariable(variable, value)
+	end -- if
 
--- redraw the energy bars
-show_stats()
+	-- redraw the energy bars
+	ui_update()
 
 end -- if
 end -- function OnPluginTelnetSubnegotiation

@@ -155,37 +155,37 @@ end -- if
 end -- draw_energy_bar
 
 function outlined_text (colour, window, text, size, x, y)
-outlineColour = colourBlack
--- write the information inside
-WindowFont(window,'f','Times New Roman',size,1,0,0,0)
+	outlineColour = colourBlack
+	-- write the information inside
+	WindowFont(window,'f','Times New Roman',size,1,0,0,0)
 
--- smear black text around the location to create an outline, so that it's clearer to read
-WindowText(window,'f',text,x+1,y+1,0,0,outlineColour,0)
-WindowText(window,'f',text,x+1,y,0,0,outlineColour,0)
-WindowText(window,'f',text,x+1,y-1,0,0,outlineColour,0)
-WindowText(window,'f',text,x,y+1,y,0,outlineColour,0)
-WindowText(window,'f',text,x,y-1,y,0,outlineColour,0)
-WindowText(window,'f',text,x-1,y+1,0,0,outlineColour,0)
-WindowText(window,'f',text,x-1,y,0,0,outlineColour,0)
-WindowText(window,'f',text,x-1,y-1,0,0,outlineColour,0)
+	-- smear black text around the location to create an outline, so that it's clearer to read
+	WindowText(window,'f',text,x+1,y+1,0,0,outlineColour,0)
+	WindowText(window,'f',text,x+1,y,0,0,outlineColour,0)
+	WindowText(window,'f',text,x+1,y-1,0,0,outlineColour,0)
+	WindowText(window,'f',text,x,y+1,y,0,outlineColour,0)
+	WindowText(window,'f',text,x,y-1,y,0,outlineColour,0)
+	WindowText(window,'f',text,x-1,y+1,0,0,outlineColour,0)
+	WindowText(window,'f',text,x-1,y,0,0,outlineColour,0)
+	WindowText(window,'f',text,x-1,y-1,0,0,outlineColour,0)
 
--- display the text
-WindowText(window,'f',text,x,y,0,0,colour,0)
+	-- display the text
+	WindowText(window,'f',text,x,y,0,0,colour,0)
 
 end -- outlined_text
 
 function DoGauge (sPrompt, Percent, Colour)
 
--- show ticks
-local ticks_at = (WINDOW_WIDTH - GAUGE_LEFT - 5) / (NUMBER_OF_TICKS + 1)
+	-- show ticks
+	local ticks_at = (WINDOW_WIDTH - GAUGE_LEFT - 5) / (NUMBER_OF_TICKS + 1)
 
--- ticks
-for i = 1, NUMBER_OF_TICKS do
-WindowLine (win, GAUGE_LEFT + (i * ticks_at), vertical, GAUGE_LEFT + (i * ticks_at), vertical + GAUGE_HEIGHT, ColourNameToRGB ("silver"), 0, 1)
-end -- for
--- draw a box around it
-check (WindowRectOp (win, 1, GAUGE_LEFT, vertical, WINDOW_WIDTH - 5, vertical + GAUGE_HEIGHT, 
+	-- ticks
+	for i = 1, NUMBER_OF_TICKS do
+		WindowLine (win, GAUGE_LEFT + (i * ticks_at), vertical, GAUGE_LEFT + (i * ticks_at), vertical + GAUGE_HEIGHT, ColourNameToRGB ("silver"), 0, 1)
+	end -- for
+	-- draw a box around it
+	check (WindowRectOp (win, 1, GAUGE_LEFT, vertical, WINDOW_WIDTH - 5, vertical + GAUGE_HEIGHT, 
 	ColourNameToRGB ("lightgrey")))  -- frame entire box
-	
+
 	vertical = vertical + font_height + 3
-	end -- function
+end -- function

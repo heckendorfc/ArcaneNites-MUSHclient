@@ -14,6 +14,7 @@ end -- Display_Line
 function setup_ui()
 	stat_win = "stats" .. GetPluginID ()
 	vit_win = "vitals" .. GetPluginID ()
+	affects_win = "affects" .. GetPluginID ()
 	font_id = "fn"
 	font_name = "Fixedsys"    -- the actual font
 
@@ -30,6 +31,12 @@ function setup_ui()
 		0, 
 		BACKGROUND_COLOUR) )
 
+	check (WindowCreate (affects_win, 
+		0, 0, 1, 1,  
+		1,   -- irrelevant
+		0, 
+		BACKGROUND_COLOUR) )
+
 	check (WindowCreate (vit_win, 
 		x, y, WINDOW_WIDTH, WINDOW_HEIGHT,  
 		mode,   
@@ -40,6 +47,7 @@ function setup_ui()
 	--add_drag_properties(stat_win)
 
 	check (WindowFont (stat_win, font_id, font_name, 9, false, false, false, false, 0, 0))  -- normal
+	check (WindowFont (affects_win, font_id, font_name, 9, false, false, false, false, 0, 0))  -- normal
 
 	stat_max_width = WindowTextWidth(stat_win, font_id, "HITROLL: 12345678")
 	font_height = WindowFontInfo (stat_win, font_id, 1)  -- height
