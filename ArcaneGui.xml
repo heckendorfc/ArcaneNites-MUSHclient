@@ -6,7 +6,7 @@
 <muclient>
 <plugin
 name="ArcaneGui_GUI"
-author="Mulet, Selic, KaVir"
+author="Selic, Mulet, KaVir"
 id="fd49b63111269dc368b76922"
 language="Lua"
 purpose="Custom layout for Arcane Nites"
