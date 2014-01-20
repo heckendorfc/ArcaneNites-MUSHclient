@@ -9,7 +9,7 @@ name="ArcaneGui_GUI"
 author="Selic, Mulet, KaVir"
 id="fd49b63111269dc368b76922"
 language="Lua"
-purpose="Custom layout for Arcane Nites"
+purpose="Arcane Nites Layout"
 date_written="2010-05-07 03:05:07"
 requires="4.51"
 version="1.14"
@@ -17,6 +17,74 @@ save_state="y"
 >
 </plugin>
 
+<triggers>
+  <trigger
+   match="* tells you '*"
+   name="tell_line"
+   script="tell_line"
+   sequence="100"
+   enabled="y"
+  >
+  </trigger>
+
+  <trigger
+   match="* says '*"
+   name="say_line"
+   script="say_line"
+   sequence="100"
+   enabled="y"
+  >
+  </trigger>
+  <trigger
+   match="* shrieks '*"
+   name="shriek_line"
+   script="shriek_line"
+   sequence="100"
+   enabled="y"
+  >
+  </trigger>
+  <trigger
+   match="* OOCs '*"
+   name="ooc_line"
+   script="ooc_line"
+   sequence="100"
+   enabled="y"
+  >
+  </trigger>
+  <trigger
+   match="* tells the group '*"
+   name="gtell_line"
+   script="gtell_line"
+   sequence="100"
+   enabled="y"
+  >
+  </trigger>
+  <trigger
+   match="*> *"
+   name="hero_line"
+   script="hero_line"
+   sequence="100"
+   enabled="y"
+  >
+  </trigger>
+</triggers>
+
+<aliases>
+	<alias
+		script="chat_log_clear"
+		match="clear_chats"
+		enabled="y"
+		sequence="100"
+		>
+	</alias>
+	<alias
+		script="show_chat_log"
+		match="show_chats"
+		enabled="y"
+		sequence="100"
+		>
+	</alias>
+</aliases>
 
 <!--  Get our standard constants -->
 
@@ -26,21 +94,31 @@ save_state="y"
 
 <script>
 <![CDATA[
+
+require "getstyle"
+
 --put your lua script there  
 require "msdp"
 require "an_ui"
 require "an_stats"
 require "an_vitals"
 require "an_affects"
+require "an_minimap"
+require "an_chat"
 
 function ui_update()
+	winpos={}
+	winpos.right = GetInfo (281) 
+	winpos.bottom = GetInfo (280)
 	show_affects()
 	show_stats()
+	show_minimap()
 	draw_energy_bars()
 end
 
 function OnPluginInstall ()
 	create_layout ()
+	init_chat()
 	setup_ui()
 end -- OnPluginInstall
 

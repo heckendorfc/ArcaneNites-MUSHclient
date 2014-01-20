@@ -5,6 +5,7 @@ GAUGE_HEIGHT = 15
 WINDOW_WIDTH = 200
 WINDOW_HEIGHT = 65
 NUMBER_OF_TICKS = 5
+vit_winheight = 13
 
 
 local using_msdp = false
@@ -40,7 +41,7 @@ local y = tonumber (GetVariable (health_window..'y')) or top+1
 -- make a miniwindow under the text
 check (WindowCreate (health_window,   -- window ID
 	x,  y,  
-	health_width-2, 13,-- width && depth 
+	health_width-2, vit_winheight,-- width && depth 
 	12,            -- center it (ignored anyway) 
 	2,             -- draw underneath (1) + absolute location (2)
 	colourBlack))  -- background colour
@@ -53,7 +54,7 @@ check (WindowCreate (health_window,   -- window ID
 	-- make a miniwindow under the text
 	check (WindowCreate (mana_window,   -- window ID
 		x,  y,  
-		mana_width-2,  13,  12,          
+		mana_width-2,  vit_winheight,  12,          
 		2,             -- draw underneath (1) + absolute location (2)
 		colourBlack))  -- background colour
 	
@@ -67,7 +68,7 @@ check (WindowCreate (health_window,   -- window ID
 	  -- make a miniwindow under the text
 	  check (WindowCreate (movement_window,   -- window ID
 	  	x,  y,  
-	  	moves_width-2,  13,  12,          
+	  	moves_width-2,  vit_winheight,  12,          
 	  	2,             -- draw underneath (1) + absolute location (2)
 	  	colourBlack))  -- background colour
 	

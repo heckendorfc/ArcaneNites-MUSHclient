@@ -2,4 +2,4 @@ MUSHclient scripts for Arcane Nites
 -----------------------------------
 
 Install the *.lua files to the lua directory
-Install the *.xml files to the world/plugins directory
+Install ArcaneGui.xml to the world/plugins directory

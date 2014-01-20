@@ -1,22 +1,82 @@
-BACKGROUND_COLOUR = ColourNameToRGB "rosybrown"
-FONT_COLOUR = ColourNameToRGB "darkred"
+BACKGROUND_COLOUR = ColourNameToRGB "black"
+FONT_COLOUR = ColourNameToRGB "white"
+ANSI_FONT_COLOR = string.char(27) .. "0;37m"
 BORDER_COLOUR = ColourNameToRGB "#553333"
+
+local BLACK = 1
+local RED = 2
+local GREEN = 3  
+local YELLOW = 4 
+local BLUE = 5 
+local MAGENTA = 6 
+local CYAN = 7 
+local WHITE = 8
+
+local colortable = {
+	["030"] =0x000000,
+	["031"] = 0x000080,
+	["032"] = 0x008000,
+	["033"] = 0x008080,
+	["034"] = 0x800000,
+	["035"] = 0x800080,
+	["036"] = 0x808000,
+	["037"] = 0xC0C0C0,
+	["130"] = 0x808080,
+	["131"] = 0x0000FF,
+	["132"] = 0x00FF00,
+	["133"] = 0x00FFFF,
+	["134"] = 0xFF0000,
+	["135"] = 0xFF00FF,
+	["136"] = 0xFFFF00,
+	["137"] = 0xFFFFFF}
+
+function getMushColor(c,default)
+	if c == nil then
+		return default
+	end
+
+	local single = c:match("^(%d+)m")
+
+	if single == nil then
+		for a,b in c:gmatch("(%d+);(%d+)m") do
+			if colortable[a .. b] then
+				return colortable[a .. b]
+			end
+		end
+	elseif colortable[single] then
+		return colortable[single]
+	end
+
+	return default
+end
 
 function Display_Line (window, i, text, id, colour)
 
-  local left = 5
-  local top =  (i * font_height) - font_height
+	local left = 5
+	local top =  (i * font_height) - font_height
 
-  WindowText (window, id, text, left, top, 0, 0, colour)
+	if text:byte(1)~=27 then
+		line = ANSI_FONT_COLOR .. text
+	else
+		line = text
+	end
+
+	for c,t in line:gmatch("\27.([%d;]+m)([^\27]+)") do
+		textc = getMushColor(c,colour)
+		left = left + WindowText (window, id, t, left, top, 0, 0, textc)
+	end
 
 end -- Display_Line
 
 function setup_ui()
+	chat_win = "chat" .. GetPluginID ()
+	map_win = "map" .. GetPluginID ()
 	stat_win = "stats" .. GetPluginID ()
 	vit_win = "vitals" .. GetPluginID ()
 	affects_win = "affects" .. GetPluginID ()
 	font_id = "fn"
-	font_name = "Fixedsys"    -- the actual font
+	-- font_name = "Fixedsys"    -- the actual font
+	font_size = 9
 
 	local x, y, mode, flags = 
 	tonumber (GetVariable ("windowx")) or 0,
@@ -24,8 +84,27 @@ function setup_ui()
 	tonumber (GetVariable ("windowmode")) or 8, -- bottom right
 	tonumber (GetVariable ("windowflags")) or 0
 
+	aff_winwidth = 0
+	aff_winheight = 0
+	stat_winheight = 0
+	stat_winwidth = 0
+	map_winwidth = 0
+	map_winheight = 0
+
 	-- make miniwindow so I can grab the font info
+	check (WindowCreate (chat_win, 
+		0, 0, 1, 1,  
+		1,   -- irrelevant
+		0, 
+		BACKGROUND_COLOUR) )
+
 	check (WindowCreate (stat_win, 
+		0, 0, 1, 1,  
+		1,   -- irrelevant
+		0, 
+		BACKGROUND_COLOUR) )
+
+	check (WindowCreate (map_win, 
 		0, 0, 1, 1,  
 		1,   -- irrelevant
 		0, 
@@ -44,13 +123,28 @@ function setup_ui()
 		BACKGROUND_COLOUR) )
 
 	add_drag_properties(vit_win)
-	--add_drag_properties(stat_win)
+	add_drag_properties(stat_win)
+	add_drag_properties(map_win)
+	add_drag_properties(affects_win)
 
-	check (WindowFont (stat_win, font_id, font_name, 9, false, false, false, false, 0, 0))  -- normal
-	check (WindowFont (affects_win, font_id, font_name, 9, false, false, false, false, 0, 0))  -- normal
+	local fonts = utils.getfontfamilies ()
+	if fonts.Dina then
+		font_name = "Dina"    
+	elseif fonts ["Lucida Sans Unicode"] then
+		font_name = "Lucida Sans Unicode"
+	else
+		font_size = 10
+		font_name = "Courier"
+	end -- if
+
+	check (WindowFont (stat_win, font_id, font_name, font_size, false, false, false, false, 0, 49))  -- normal
+	check (WindowFont (affects_win, font_id, font_name, font_size, false, false, false, false, 0, 49))  -- normal
+	check (WindowFont (map_win, font_id, font_name, font_size, false, false, false, false, 0, 49))  -- normal
+	check (WindowFont (chat_win, font_id, font_name, font_size, false, false, false, false, 0, 49))  -- normal
 
 	stat_max_width = WindowTextWidth(stat_win, font_id, "HITROLL: 12345678")
 	font_height = WindowFontInfo (stat_win, font_id, 1)  -- height
+
 	WindowShow (vit_win, true)
 end
 
