@@ -1,8 +1,8 @@
 --local stat_keys = {"AC","CHA","CON","DAMROLL","DEX","HITROLL","INT","SAVES","STR","WIS"}
 local pri_stat_keys = {"STR","DEX","CON","WIS","CHA","INT"}
 local sec_stat_keys = {"DAMROLL","HITROLL","SAVES","AC"}
-local ter_stat_keys = {"SIZE","SEX","FIGHTING_STANCE"}
-local ter_stat_key_title = {"SIZE","SEX","STANCE"}
+local ter_stat_keys = {"ALIGNMENT","SIZE","SEX","FIGHTING_STANCE"}
+local ter_stat_key_title = {"ALIGN","SIZE","SEX","STANCE"}
 local text_colour = FONT_COLOUR
 
 function show_stats()
