@@ -31,11 +31,11 @@ function show_chat_log ()
 	end -- if
 
 	local winwidth = max_width + 10
-	local winheight = (#chat_log)   * font_height + 5
+	local winheight = (#chat_log)   * font_height + 10
 
 	-- recreate the window the correct size
 	check (WindowCreate (chat_win, 
-	0, vit_winheight+1,   -- left, top (auto-positions)
+	0, vit_winheight+WIN_GAP,   -- left, top (auto-positions)
 	winwidth,
 	winheight,
 	4,       -- auto-position: top left

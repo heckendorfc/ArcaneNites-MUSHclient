@@ -2,6 +2,8 @@ BACKGROUND_COLOUR = ColourNameToRGB "black"
 FONT_COLOUR = ColourNameToRGB "white"
 ANSI_FONT_COLOR = string.char(27) .. "0;37m"
 BORDER_COLOUR = ColourNameToRGB "#553333"
+WIN_GAP = 5
+MAX_WIDTH_CHARS = 20
 
 local BLACK = 1
 local RED = 2
@@ -53,7 +55,7 @@ end
 function Display_Line (window, i, text, id, colour)
 
 	local left = 5
-	local top =  (i * font_height) - font_height
+	local top =  5 + (i * font_height) - font_height
 
 	if text:byte(1)~=27 then
 		line = ANSI_FONT_COLOR .. text
